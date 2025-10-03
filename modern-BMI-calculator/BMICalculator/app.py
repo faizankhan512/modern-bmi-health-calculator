@@ -15,6 +15,32 @@ st.set_page_config(
     layout="wide"
 )
 
+# Theme selector code goes here
+theme_choice = st.radio(
+    "Choose App Theme:",
+    options=["Light Mode", "Dark Navy Mode"],
+    horizontal=True
+)
+
+if theme_choice == "Light Mode":
+    st.markdown(
+        """<style>
+        .stApp, .css-18e3th9 { background-color: #FFFFFF; color: #000000; }
+        #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
+        .block-container { background-color: transparent; }
+        </style>""",
+        unsafe_allow_html=True
+    )
+else:
+    st.markdown(
+        """<style>
+        .stApp, .css-18e3th9 { background-color: #0B3D91; color: #ffffff; }
+        #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
+        .block-container { background-color: transparent; }
+        </style>""",
+        unsafe_allow_html=True
+    )
+
 # ------------------ Dark Batman Theme & Centered Bat ------------------
 st.markdown(
     """
