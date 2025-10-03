@@ -70,9 +70,18 @@ if gender == "Male":
 elif gender == "Female":
     bmr = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age)
 else:
-    bmr = (88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age) +
-           447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age)) / 2
+    bmr_male = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age)
+    bmr_female = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age)
+    bmr = (bmr_male + bmr_female) / 2
 
-activity_multipliers = {"Sedentary":
+activity_multipliers = {
+    "Sedentary": 1.2,
+    "Light": 1.375,
+    "Moderate": 1.55,
+    "Very Active": 1.725,
+    "Extra Active": 1.9
+}
+
+daily_calories = round(bmr * activity_multipliers[activity_level])
        
    
