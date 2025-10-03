@@ -8,23 +8,42 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 from reportlab.lib.units import inch
 import plotly.graph_objects as go
 
-# ------------------ Page Config ------------------
 st.set_page_config(
-    page_title="🦇 Modern BMI & BMR Dashboard",
-    page_icon="🦇",
-    layout="wide",
+    page_title="BMI Calculator Dashboard",
+    page_icon="🏋",
+    layout="wide"
+)
+
+# ------------------ Dashboard Title with Metallic Effect ------------------
+st.markdown(
+    """
+    <h1 style='
+        text-align: center;
+        font-size: 48px;
+        font-weight: 900;
+        background: linear-gradient(90deg, #FFD700, #FFA500, #FFD700);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        font-family: "Arial Black", sans-serif;
+        margin-bottom: 10px;
+    '>
+        🦇 BMI Calculator & Health Dashboard
+    </h1>
+    """,
+    unsafe_allow_html=True
 )
 # ------------------ Motivational Fitness Quote ------------------
 st.markdown(
     """
     <div style='
         text-align: center; 
-        font-size: 20px; 
+        font-size: 18px; 
         font-weight: bold; 
         color: #FFD700; 
-        background-color: rgba(0,0,0,0.6); 
-        padding: 10px; 
-        border-radius: 10px;
+        background-color: rgba(0,0,0,0.5); 
+        padding: 8px; 
+        border-radius: 8px;
         margin-bottom: 20px;
     '>
         "Fitness is not about being better than someone else; it’s about being better than you used to be." 🌟
