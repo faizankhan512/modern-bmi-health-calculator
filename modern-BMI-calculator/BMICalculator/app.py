@@ -14,17 +14,17 @@ st.set_page_config(
     layout="wide"
 )
 
-# ------------------ Dashboard Title with Metallic Effect ------------------
+# ------------------ Dashboard Title with Dark Metallic Effect ------------------
 st.markdown(
     """
     <h1 style='
         text-align: center;
         font-size: 48px;
         font-weight: 900;
-        background: linear-gradient(90deg, #FFD700, #FFA500, #FFD700);
+        background: linear-gradient(90deg, #A9A9A9, #C0C0C0, #808080, #708090);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
         font-family: "Arial Black", sans-serif;
         margin-bottom: 10px;
     '>
