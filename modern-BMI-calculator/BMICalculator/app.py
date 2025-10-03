@@ -14,25 +14,7 @@ st.set_page_config(
     page_icon="🦇",
     layout="wide"
 )
-import streamlit as st
 
-# ------------------ Metallic Red Title ------------------
-st.markdown("""
-    <style>
-    .dashboard-title {
-        font-size: 48px;
-        font-weight: 900;
-        text-align: center;
-        background: linear-gradient(90deg, #FF0000, #8B0000, #FF4500);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        letter-spacing: 2px;
-        text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-st.markdown('<h1 class="dashboard-title">🦇 Modern BMI & BMR Dashboard</h1>', unsafe_allow_html=True)
 
 # ------------------ Dark Batman Theme & Centered Bat ------------------
 st.markdown(
