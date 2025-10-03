@@ -1,0 +1,97 @@
+import streamlit as st
+from PIL import Image
+import plotly.graph_objects as go
+
+# Page config
+st.set_page_config(
+    page_title="BMI Calculator Dashboard",
+    page_icon="🏋",
+    layout="wide"
+)
+
+# ------------------ Front Page ------------------
+st.markdown("<h1 style='text-align: center; color: #1E90FF;'>🏋 BMI Calculator & Health Dashboard</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; font-size:18px;'>Interactive BMI tool with health advice and daily calorie recommendation</p>", unsafe_allow_html=True)
+st.write("---")
+
+# ------------------ Input Section ------------------
+col1, col2 = st.columns(2)
+
+with col1:
+    weight = st.slider("Select your weight (kg):", 20, 200, 70)
+with col2:
+    height_cm = st.slider("Select your height (cm):", 100, 220, 170)
+
+age = st.slider("Age:", 5, 100, 25)
+gender = st.selectbox("Gender:", ["Male", "Female", "Other"])
+
+# ------------------ BMI Calculation ------------------
+height_m = height_cm / 100
+bmi = round(weight / (height_m ** 2), 1)
+
+# BMI Category & Health Risk
+if bmi < 18.5:
+    category = "Underweight"
+    color = "blue"
+    risk = "Higher risk of nutritional deficiency and osteoporosis."
+elif 18.5 <= bmi < 24.9:
+    category = "Normal"
+    color = "green"
+    risk = "Low risk, maintain a healthy lifestyle."
+elif 25 <= bmi < 29.9:
+    category = "Overweight"
+    color = "orange"
+    risk = "Increased risk of cardiovascular disease and diabetes."
+else:
+    category = "Obese"
+    color = "red"
+    risk = "High risk of heart disease, diabetes, and other health issues."
+
+# Ideal weight range
+ideal_weight_min = round(18.5 * (height_m ** 2), 1)
+ideal_weight_max = round(24.9 * (height_m ** 2), 1)
+
+# Daily calories recommendation
+daily_calories = round(weight * 25)  # simple formula
+
+# ------------------ Display Results ------------------
+st.markdown("<h2 style='color:#1E90FF;'>Your BMI Results</h2>", unsafe_allow_html=True)
+
+col3, col4 = st.columns([2,3])
+
+with col3:
+    st.metric("BMI Value", f"{bmi} ({category})")
+    st.info(f"Health Risk: {risk}")
+    st.write(f"Ideal Weight: {ideal_weight_min} kg - {ideal_weight_max} kg")
+    st.write(f"Recommended Daily Calories: {daily_calories} kcal/day")
+
+with col4:
+    # Color-coded gauge for BMI
+    fig = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=bmi,
+        title={'text': "BMI Gauge"},
+        gauge={
+            'axis': {'range': [10, 40]},
+            'bar': {'color': color},
+            'steps': [
+                {'range': [10, 18.5], 'color': "lightblue"},
+                {'range': [18.5, 24.9], 'color': "lightgreen"},
+                {'range': [25, 29.9], 'color': "lightorange"},
+                {'range': [30, 40], 'color': "lightcoral"}
+            ],
+        }
+    ))
+    st.plotly_chart(fig, use_container_width=True)
+
+# ------------------ Tips Section ------------------
+st.markdown("<h3 style='color:#1E90FF;'>Health Tips</h3>", unsafe_allow_html=True)
+st.markdown("""
+- Maintain a balanced diet rich in proteins, vitamins, and minerals  
+- Include at least 30 minutes of physical activity daily  
+- Drink plenty of water  
+- Monitor your BMI regularly  
+""")
+
+st.write("---")
+st.markdown("<p style='text-align:center; font-size:14px;'>Created by Faizan Shah Khan | Interactive BMI Tool</p>", unsafe_allow_html=True)
