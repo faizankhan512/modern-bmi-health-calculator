@@ -1,6 +1,4 @@
 import streamlit as st
-from PIL import Image
-import plotly.graph_objects as go
 from datetime import datetime
 from io import BytesIO
 from reportlab.lib.pagesizes import letter
@@ -8,14 +6,13 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.units import inch
-import math
+import plotly.graph_objects as go
 
 # ------------------ Page Config ------------------
 st.set_page_config(
     page_title="🦇 Modern BMI & BMR Dashboard",
     page_icon="🦇",
     layout="wide",
-    initial_sidebar_state="expanded",
 )
 
 # ------------------ Custom CSS / Batman Theme ------------------
@@ -24,6 +21,12 @@ st.markdown("""
 body {
     background-color: #1c1c1c;
     color: #f0f0f0;
+    background-image: url('https://i.imgur.com/3v4JwqZ.png');
+    background-size: 80%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    opacity: 0.9;
 }
 h1, h2, h3, h4 {
     color: #FFD700;
@@ -42,8 +45,13 @@ h1, h2, h3, h4 {
 </style>
 """, unsafe_allow_html=True)
 
+# ------------------ Session State ------------------
+if "history" not in st.session_state:
+    st.session_state.history = []
+
 # ------------------ Functions ------------------
-def generate_pdf(weight, height, age, gender, bmi, category, risk, ideal_min, ideal_max, bmr, activity_level, daily_calories, body_fat, water_intake, protein):
+def generate_pdf(weight, height, age, gender, bmi, category, risk, ideal_min, ideal_max,
+                 bmr, activity_level, daily_calories, body_fat, water_intake, protein):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     styles = getSampleStyleSheet()
@@ -58,8 +66,8 @@ def generate_pdf(weight, height, age, gender, bmi, category, risk, ideal_min, id
     # BMI Data Table
     bmi_data = [
         ['Metric', 'Value'],
-        ['Weight', f'{weight} kg'],
-        ['Height', f'{height} cm'],
+        ['Weight', f'{weight} kg ({round(weight*2.20462,1)} lbs)'],
+        ['Height', f'{height} cm ({round(height*0.393701,1)} in)'],
         ['Age', f'{age} years'],
         ['Gender', gender],
         ['BMI', f'{bmi} ({category})'],
@@ -111,7 +119,7 @@ def generate_pdf(weight, height, age, gender, bmi, category, risk, ideal_min, id
     tips = [
         "Maintain a balanced diet with proper calories",
         "Stay hydrated with at least 30-40 ml/kg water",
-        "Do 150 min/week of moderate exercise",
+        "Do 150 min/week moderate exercise",
         "Monitor BMI and body fat regularly",
         "Get 7-9 hours of sleep per night",
         "Manage stress through mindfulness"
@@ -125,9 +133,9 @@ def generate_pdf(weight, height, age, gender, bmi, category, risk, ideal_min, id
     buffer.seek(0)
     return buffer
 
-# ------------------ Input Section ------------------
+# ------------------ Inputs ------------------
 st.markdown("<h1 style='text-align:center'>🦇 Modern BMI & BMR Dashboard</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align:center'>Calculate BMI, BMR and get health tips!</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center'>Calculate BMI, BMR, calories, protein, and get health tips!</p>", unsafe_allow_html=True)
 st.write("---")
 
 col1, col2 = st.columns(2)
@@ -138,86 +146,100 @@ with col2:
 
 age = st.slider("Age (years):", 5, 100, 25)
 gender = st.selectbox("Gender:", ["Male","Female","Other"])
-
 activity_level = st.select_slider("Activity Level:",
     options=["Sedentary","Light","Moderate","Very Active","Extra Active"], value="Moderate")
 
 # ------------------ Calculations ------------------
-height_m = height_cm / 100
-bmi = round(weight / (height_m**2),1)
+height_m = height_cm/100
+bmi = round(weight/(height_m**2),1)
 ideal_min = round(18.5*(height_m**2),1)
 ideal_max = round(24.9*(height_m**2),1)
 
 # BMI category
-if bmi < 18.5:
-    category = "Underweight"
-    risk = "Higher risk of nutritional deficiency, osteoporosis"
-elif bmi < 25:
-    category = "Normal"
-    risk = "Low risk, maintain healthy lifestyle"
-elif bmi < 30:
-    category = "Overweight"
-    risk = "Increased risk of heart disease, diabetes"
+if bmi<18.5:
+    category="Underweight"
+    risk="Higher risk of nutritional deficiency, osteoporosis"
+elif bmi<25:
+    category="Normal"
+    risk="Low risk, maintain healthy lifestyle"
+elif bmi<30:
+    category="Overweight"
+    risk="Increased risk of heart disease, diabetes"
 else:
-    category = "Obese"
-    risk = "High risk of heart disease, diabetes, other health issues"
+    category="Obese"
+    risk="High risk of heart disease, diabetes, other health issues"
 
-# BMR Calculation (Harris-Benedict)
+# BMR
 if gender=="Male":
-    bmr = 88.362 + (13.397*weight) + (4.799*height_cm) - (5.677*age)
+    bmr=88.362 + (13.397*weight) + (4.799*height_cm) - (5.677*age)
 elif gender=="Female":
-    bmr = 447.593 + (9.247*weight) + (3.098*height_cm) - (4.330*age)
+    bmr=447.593 + (9.247*weight) + (3.098*height_cm) - (4.330*age)
 else:
-    bmr_m = 88.362 + (13.397*weight) + (4.799*height_cm) - (5.677*age)
-    bmr_f = 447.593 + (9.247*weight) + (3.098*height_cm) - (4.330*age)
-    bmr = (bmr_m + bmr_f)/2
+    bmr_m=88.362 + (13.397*weight) + (4.799*height_cm) - (5.677*age)
+    bmr_f=447.593 + (9.247*weight) + (3.098*height_cm) - (4.330*age)
+    bmr=(bmr_m+bmr_f)/2
 
-# Activity multipliers
-activity_multipliers = {"Sedentary":1.2,"Light":1.375,"Moderate":1.55,"Very Active":1.725,"Extra Active":1.9}
+activity_multipliers={"Sedentary":1.2,"Light":1.375,"Moderate":1.55,"Very Active":1.725,"Extra Active":1.9}
 daily_calories = round(bmr*activity_multipliers[activity_level])
-
-# Body fat, water, protein
 if gender=="Male":
-    body_fat = round((1.20*bmi)+(0.23*age)-16.2,1)
+    body_fat=round((1.20*bmi)+(0.23*age)-16.2,1)
 else:
-    body_fat = round((1.20*bmi)+(0.23*age)-5.4,1)
+    body_fat=round((1.20*bmi)+(0.23*age)-5.4,1)
 body_fat = max(0,min(60,body_fat))
-water_intake = round(weight*35)
-protein = round(weight*0.8)
+water_intake=round(weight*35)
+protein=round(weight*0.8)
 
 # ------------------ Display ------------------
 st.markdown(f"*BMI:* {bmi} ({category}) | *Health Risk:* {risk}")
-st.markdown(f"*Ideal Weight Range:* {ideal_min} - {ideal_max} kg")
-st.markdown(f"*Daily Calories:* {daily_calories} kcal | *BMR:* {round(bmr)} kcal/day")
-st.markdown(f"*Body Fat:* {body_fat}% | *Water Intake:* {water_intake} ml | *Protein:* {protein} g")
+st.markdown(f"*Ideal Weight Range:* {ideal_min} - {ideal_max} kg | {round(ideal_min*2.20462,1)} - {round(ideal_max*2.20462,1)} lbs")
+st.markdown(f"*Height:* {height_cm} cm | {round(height_cm*0.393701,1)} in")
+st.markdown(f"*BMR:* {round(bmr)} kcal/day | *Calories Needed:* {daily_calories} kcal/day")
+st.markdown(f"*Body Fat:* {body_fat}% | *Water:* {water_intake} ml | *Protein:* {protein} g")
 
-# ------------------ BMR Interactive Chart ------------------
-st.markdown("### 🦇 BMR & Calorie Breakdown")
-fig_bmr = go.Figure()
-fig_bmr.add_trace(go.Bar(name="BMR", x=["BMR"], y=[round(bmr)], marker_color="#FFD700"))
-fig_bmr.add_trace(go.Bar(name="Daily Calories", x=["Calories Needed"], y=[daily_calories], marker_color="#FF8C00"))
-fig_bmr.update_layout(barmode='group', template='plotly_dark', yaxis_title="kcal")
+# ------------------ Charts ------------------
+st.markdown("### 🦇 BMI Gauge")
+fig_bmi = go.Figure(go.Indicator(
+    mode="gauge+number",
+    value=bmi,
+    title={'text': "BMI"},
+    gauge={'axis': {'range':[10,50]},
+           'bar': {'color':'#FFD700'},
+           'steps':[{'range':[10,18.5],'color':'blue'},
+                    {'range':[18.5,24.9],'color':'green'},
+                    {'range':[25,29.9],'color':'orange'},
+                    {'range':[30,50],'color':'red'}]}))
+st.plotly_chart(fig_bmi, use_container_width=True)
+
+st.markdown("### 🦇 BMR Gauge")
+fig_bmr = go.Figure(go.Indicator(
+    mode="gauge+number",
+    value=bmr,
+    title={'text': "BMR"},
+    gauge={'axis': {'range':[1000,4000]},
+           'bar': {'color':'#FFD700'},
+           'steps':[{'range':[1000,2000],'color':'orange'},
+                    {'range':[2000,3000],'color':'yellow'},
+                    {'range':[3000,4000],'color':'green'}]}))
 st.plotly_chart(fig_bmr, use_container_width=True)
 
-# Health Suggestions based on BMI
-st.markdown("### 🦇 Health Suggestions")
-suggestions = [
-    f"Maintain weight within {ideal_min}-{ideal_max} kg",
-    f"Drink at least {water_intake} ml water daily",
-    f"Consume {protein} g protein daily",
-    "Do 150 min/week moderate exercise",
-    "Sleep 7-9 hours nightly",
-    "Regular health check-ups recommended"
-]
-for s in suggestions:
-    st.write("• "+s)
+# ------------------ Save Session ------------------
+if st.button("💾 Save Session"):
+    st.session_state.history.append({
+        "date": datetime.now().strftime('%Y-%m-%d %H:%M'),
+        "weight": weight,
+        "height_cm": height_cm,
+        "BMI": bmi,
+        "BMR": round(bmr),
+        "Body Fat": body_fat
+    })
+    st.success("Session saved!")
 
-# ------------------ PDF Download ------------------
-if st.button("📄 Download PDF Report"):
-    pdf_buffer = generate_pdf(weight,height_cm,age,gender,bmi,category,risk,ideal_min,ideal_max,bmr,activity_level,daily_calories,body_fat,water_intake,protein)
-    st.download_button("Download Report", data=pdf_buffer, file_name=f"BMI_Report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf", mime="application/pdf")
+# ------------------ Display History ------------------
+if st.session_state.history:
+    st.markdown("### 🦇 Session History")
+    for record in reversed(st.session_state.history[-10:]):
+        st.write(record)
 
-# ------------------ Share Result ------------------
-st.markdown("### 🦇 Share Your Result")
-st.text_area("Copy your results:", value=f"BMI: {bmi} ({category}) | BMR: {round(bmr)} kcal | Calories: {daily_calories} kcal | Water: {water_intake} ml | Protein: {protein} g", height=100)
-st.markdown("<p style='text-align:center;'>🦇 Built by Faizan Shah Khan | Batman Theme</p>", unsafe_allow_html=True)
+# ------------------ Download PDF ------------------
+pdf_buffer = generate_pdf(weight,height_cm,age,gender,bmi,category,risk,ideal_min,ideal_max,bmr,activity_level,daily_calories,body_fat,water_intake,protein)
+st.download_button("📄 Download PDF Report", data=pdf_buffer, file_name=f"BMI_Report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf", mime="application/pdf")
