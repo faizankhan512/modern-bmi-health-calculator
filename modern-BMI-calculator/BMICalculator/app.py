@@ -197,14 +197,11 @@ with col2:
     st.plotly_chart(fig_bmr,use_container_width=True)
 
 # ------------------ Session History ------------------
-from streamlit_javascript import st_javascript
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone, timedelta
 
-# Get user's timezone offset in minutes
-user_offset_minutes = st_javascript("new Date().getTimezoneOffset();")  # JS returns minutes behind UTC
-user_timezone = timezone(timedelta(minutes=-user_offset_minutes))      # convert to Python timezone
+# Use UTC (or IST if preferred)
+user_timezone = timezone.utc  # or timezone(timedelta(hours=5, minutes=30)) for IST
 
-# Append session with user local time
 st.session_state.history.append({
     "Date": datetime.now(user_timezone).strftime("%Y-%m-%d %H:%M:%S"),
     "Weight": weight,
