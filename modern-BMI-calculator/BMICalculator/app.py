@@ -26,10 +26,6 @@ h1, h2, h3, h4 {color: #FFD700;}
 </style>
 """, unsafe_allow_html=True)
 
-# ------------------ Session State ------------------
-if "history" not in st.session_state:
-    st.session_state.history = []
-
 # ------------------ PDF Function ------------------
 def generate_pdf(weight, height, age, gender, bmi, category, risk, ideal_min, ideal_max,
                  bmr, activity_level, daily_calories, body_fat, water_intake, protein):
@@ -196,22 +192,6 @@ with col2:
     fig_bmr.update_layout(height=350)
     st.plotly_chart(fig_bmr,use_container_width=True)
 
-# ------------------ Session History ------------------
-from datetime import datetime, timezone, timedelta
-
-# Use UTC (or IST if preferred)
-user_timezone = timezone.utc  # or timezone(timedelta(hours=5, minutes=30)) for IST
-
-st.session_state.history.append({
-    "Date": datetime.now(user_timezone).strftime("%Y-%m-%d %H:%M:%S"),
-    "Weight": weight,
-    "Height": height_cm,
-    "BMI": bmi,
-    "BMR": round(bmr),
-    "Category": category
-})
-for record in reversed(st.session_state.history[-5:]):
-    st.write(f"{record['Date']}: BMI {record['BMI']} ({record['Category']}), BMR {record['BMR']} kcal")
 
 # ------------------ PDF Download ------------------
 pdf_buffer = generate_pdf(weight,height_cm,age,gender,bmi,category,risk,ideal_min,ideal_max,bmr,activity_level,daily_calories,body_fat,water_intake,protein)
