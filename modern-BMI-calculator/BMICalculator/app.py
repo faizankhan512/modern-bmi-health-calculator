@@ -8,10 +8,56 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 from reportlab.lib.units import inch
 import plotly.graph_objects as go
 
+# ------------------ Page Config ------------------
 st.set_page_config(
     page_title="BMI Calculator Dashboard",
-    page_icon="🏋",
+    page_icon="🦇",
     layout="wide"
+)
+
+# ------------------ Dark Batman Theme & Centered Bat ------------------
+st.markdown(
+    """
+    <style>
+    /* Dark background */
+    .stApp {
+        background-color: #0d0d0d;
+        color: #ffffff;
+    }
+
+    /* Hide menu and footer */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+
+    /* Large semi-transparent bat in center */
+    .stApp::before {
+        content: "";
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 600px;
+        height: 600px;
+        background-image: url('https://upload.wikimedia.org/wikipedia/commons/2/22/Batman_logo.svg');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0.1;  /* adjust transparency */
+        transform: translate(-50%, -50%);
+        z-index: 0;
+    }
+
+    /* Center dashboard content */
+    .block-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding-top: 50px;
+        z-index: 1;  /* content above bat */
+    }
+    </style>
+    """, unsafe_allow_html=True
 )
 
 # ------------------ Dashboard Title with Dark Metallic Effect ------------------
@@ -33,6 +79,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 # ------------------ Motivational Fitness Quote ------------------
 st.markdown(
     """
