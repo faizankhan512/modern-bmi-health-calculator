@@ -14,6 +14,23 @@ st.set_page_config(
     page_icon="🦇",
     layout="wide",
 )
+# ------------------ Motivational Fitness Quote ------------------
+st.markdown(
+    """
+    <div style='
+        text-align: center; 
+        font-size: 20px; 
+        font-weight: bold; 
+        color: #FFD700; 
+        background-color: rgba(0,0,0,0.6); 
+        padding: 10px; 
+        border-radius: 10px;
+        margin-bottom: 20px;
+    '>
+        "Fitness is not about being better than someone else; it’s about being better than you used to be." 🌟
+    </div>
+    """, unsafe_allow_html=True
+)
 
 # ------------------ Custom CSS / Batman Dark Theme ------------------
 st.markdown("""
