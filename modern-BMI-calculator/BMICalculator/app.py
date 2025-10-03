@@ -118,11 +118,24 @@ def generate_pdf(weight, height, age, gender, bmi, category, risk, ideal_min, id
     styles = getSampleStyleSheet()
     story = []
 
-    # Title
-    title_style = ParagraphStyle('Title', parent=styles['Heading1'], fontSize=24, textColor=colors.HexColor('#FFD700'), alignment=1, spaceAfter=20)
-    story.append(Paragraph("🦇 Modern BMI & BMR Dashboard", title_style))
-    story.append(Paragraph(f"Report Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}", styles['Normal']))
-    story.append(Spacer(1, 0.2*inch))
+  # ------------------ Metallic Red Dashboard Title ------------------
+st.markdown("""
+    <style>
+    .modern-bmi-bmr-red-metallic {
+        font-size: 56px;                                 /* Large title */
+        font-weight: 900;                                /* Bold */
+        text-align: center;                              /* Centered */
+        background: linear-gradient(90deg, #FF0000, #8B0000, #FF4500); /* Metallic red gradient */
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: 2px;                             /* Slight spacing */
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.7);       /* 3D glow effect */
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# Display the title
+st.markdown('<h1 class="modern-bmi-bmr-red-metallic">🦇 Modern BMI & BMR Dashboard</h1>', unsafe_allow_html=True)
 
     # BMI Data Table
     bmi_data = [
