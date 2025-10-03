@@ -21,6 +21,29 @@ theme_choice = st.radio(
     options=["Light Mode", "Dark Navy Mode"],
     horizontal=True
 )
+def apply_theme(theme_choice):
+    if theme_choice == "Light Mode":
+        st.markdown(
+            """
+            <style>
+            .stApp, .css-18e3th9 { background-color: #FFFFFF; color: #000000; }
+            #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
+            .block-container { background-color: transparent; }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+    else:  # Dark Navy Mode
+        st.markdown(
+            """
+            <style>
+            .stApp, .css-18e3th9 { background-color: #0B3D91; color: #ffffff; }
+            #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
+            .block-container { background-color: transparent; }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
 
 if theme_choice == "Light Mode":
     st.markdown(
