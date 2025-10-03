@@ -81,7 +81,7 @@ daily_calories = round(bmr * activity_multipliers[activity_level])
 st.subheader("Your BMI Results 🦇")
 st.metric("BMI", f"{bmi} ({category})")
 st.info(f"Risk: {risk}")
-st.write(f"Ideal Weight: {round(18.5*(height_m*2),1)} – {round(24.9(height_m**2),1)} kg")
+st.write(f"Ideal Weight: {round(18.5 * (height_m*2),1)} – {round(24.9 * (height_m*2),1)} kg")
 st.write(f"BMR: {round(bmr)} kcal/day")
 st.write(f"Calories Needed: {daily_calories} kcal/day")
 
