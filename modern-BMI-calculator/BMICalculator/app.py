@@ -28,12 +28,6 @@ st.markdown("<h1 style='text-align:center;'>🦇 Batman BMI & Health Dashboard</
 st.markdown("<p style='text-align:center;'>“It's not who I am underneath, but what I do that defines me.”</p>", unsafe_allow_html=True)
 st.write("---")
 
-# ------------------ BATMAN IMAGE ------------------
-try:
-    st.image("batman.png", use_column_width=True)  # Add batman.png in repo
-except:
-    st.write("🦇 (Add batman.png to your folder for header image)")
-
 # ------------------ INPUTS ------------------
 unit_system = st.radio("Choose Unit System:", ["Metric (kg, cm)", "Imperial (lbs, inches)"])
 
@@ -207,6 +201,4 @@ st.text_area("Copy & Share Your Result:", share_text)
 
 # ------------------ FOOTER ------------------
 st.write("---")
-st.markdown("<p style='text-align:center;'>🦇 Built by Faizan Shah Khan | Batman
-       
-   
+st.markdown("<p style='text-align:center;'>🦇 Built by Faizan Shah Khan | Batman BMI Tool</p>", unsafe_allow_html=True)
