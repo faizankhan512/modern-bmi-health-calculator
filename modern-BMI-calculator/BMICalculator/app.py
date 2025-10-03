@@ -18,42 +18,6 @@ st.set_page_config(
     layout="wide"
 )
 
-# Database connection functions
-def get_db_connection():
-    """Create and return a database connection"""
-    return psycopg2.connect(os.environ['DATABASE_URL'])
-
-def save_bmi_record(weight, height, age, gender, bmi):
-    """Save BMI record to database"""
-    try:
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute(
-            "INSERT INTO bmi_history (weight, height, age, gender, bmi) VALUES (%s, %s, %s, %s, %s)",
-            (weight, height, age, gender, bmi)
-        )
-        conn.commit()
-        cur.close()
-        conn.close()
-        return True
-    except Exception as e:
-        st.error(f"Error saving to database: {e}")
-        return False
-
-def get_bmi_history():
-    """Retrieve BMI history from database"""
-    try:
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute("SELECT weight, height, age, gender, bmi, created_at FROM bmi_history ORDER BY created_at DESC LIMIT 50")
-        records = cur.fetchall()
-        cur.close()
-        conn.close()
-        return records
-    except Exception as e:
-        st.error(f"Error retrieving history: {e}")
-        return []
-
 def generate_pdf_report(weight, height, age, gender, bmi, category, risk, ideal_min, ideal_max, 
                         daily_calories, activity_level, body_fat, water_intake, protein, bmr, activity_mult):
     """Generate a PDF report with BMI data"""
